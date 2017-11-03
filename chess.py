@@ -3,8 +3,6 @@ class Piece(object):
     def __init__(self, color):
         self.passthrough = False
         self.color = color
-    def setpos(location):
-        self.position = location
 
 class Pawn(Piece):
     def __init__(self, color):
@@ -35,6 +33,7 @@ class Board(object):
     def __init__(self, dim1,dim2):
         self.dim = (dim1,dim2)
         self.array = []
+        self.readablearray = []
         self.createarray()
     def createarray(self):
         for column in range(self.dim[0]):
@@ -42,27 +41,27 @@ class Board(object):
             for row in range(self.dim[1]):
                 self.array[column].append(' ')
     def printboard(self):
-        for column in range(len(self.array)):
+        for column in range(len(self.readablearray)):
             columnstr = ''
-            for i in range(len(self.array[column])):
-                columnstr += ' '  + self.array[column][i]
+            for i in range(len(self.readablearray[column])):
+                columnstr += ' '  + self.readablearray[column][i]
             print(str(self.dim[0] - column) + ' ' + columnstr)
         rangelist = ''
-        for i in range(1, len(self.array[0]) + 1):
+        for i in range(1, len(self.readablearray[0]) + 1):
             rangelist += ' ' + str(i)
         print('X ' + rangelist)
 
 class Game(object):
     def __init__(self):
         self.piecedict= {' ': ' ', 'K' : King('White'), 'N' : Knight('White'), 'P': Pawn('White'), 'Q': Queen('White'), 'R' : Rook('White'), 'B': Bishop('White'),'k' : King('Black'), 'n' : Knight('Black'), 'p': Pawn('Black'), 'q': Queen('Black'), 'r' : Rook('Black'), 'b': Bishop('Black')}
-        self.initpos = [[]]
+        self.initpos = ([])
     def populate(self):
-        self.board.array = self.initpos
+        self.board.readablearray = self.initpos
         for i in range(len(self.board.array)):
             for j in range(len(self.board.array[i])):
-                self.board.array[i][j] = self.piecedict[self.board.array[i][j]]
+                self.board.array[i][j] = self.piecedict[self.initpos[i][j]]
 class MicroChess(Game):
     def __init__(self):
         Game.__init__(self)
         self.board = Board(5,4)
-        self.initpos = [['k', 'b', 'n', 'r'], ['p', ' ', ' ', ' '], [' ', ' ', ' ', ' '],[' ', ' ', ' ', 'P'], ['R', 'N', 'B', 'K']]
+        self.initpos = (['k', 'b', 'n', 'r'], ['p', ' ', ' ', ' '], [' ', ' ', ' ', ' '],[' ', ' ', ' ', 'P'], ['R', 'N', 'B', 'K'])
