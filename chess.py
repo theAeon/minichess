@@ -3,31 +3,48 @@ class Piece(object):
     def __init__(self, color):
         self.passthrough = False
         self.color = color
-
 class Pawn(Piece):
     def __init__(self, color):
         Piece.__init__(self,color)
         self.candouble = True
+        movecount = 2
+        self.validmoves = ((1, 0))
+        self.validcaptures = ((1, 1))
 class Knight(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.passthrough = True
+        self.movecount = 1
+        self.validmoves = ((2, 1), (1, 2))
+        self.validcaptures = self.validmoves
 class Bishop(Piece):
-    None
-
+    def __init__(self, color):
+        Piece.__init__(self, color)
+        self.movecount = '-1'
+        self.validmoves = ((1, 1))
+        self.validcaptures = self.validmoves
 class Rook(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.cancastle = True
-
+        self.movecount = '-1'
+        self.validmoves = ((1,0), (0,1))
+        self.validcaptures = self.validmoves
 class Queen(Piece):
-    None
+    def __init__(self, color):
+        Piece.__init__(self, color)
+        self.movecount = '-1'
+        self.validmoves = ((1,0), (0,1), (1,1))
+        self.validcaptures = self.validmoves
 
 class King(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.incheck = False
         self.cancastle = True
+        self.movecount = '1'
+        self.validmoves = ((1,0), (0,1), (1,1))
+        self.validcaptures = self.validmoves
 
 class Board(object):
     def __init__(self, dim1,dim2):
