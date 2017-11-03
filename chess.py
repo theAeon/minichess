@@ -15,26 +15,26 @@ class Knight(Piece):
         Piece.__init__(self, color)
         self.passthrough = True
         self.movecount = 1
-        self.validmoves = ((2, 1), (1, 2))
+        self.validmoves = ((2, 1), (1, 2), (-1, 2), (1, -2))
         self.validcaptures = self.validmoves
 class Bishop(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.movecount = '-1'
-        self.validmoves = ((1, 1))
+        self.validmoves = ((1, 1), (-1, 1), (1,-1), (-1,-1))
         self.validcaptures = self.validmoves
 class Rook(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.cancastle = True
         self.movecount = '-1'
-        self.validmoves = ((1,0), (0,1))
+        self.validmoves = ((1,0), (0,1), (-1, 0), (0,-1))
         self.validcaptures = self.validmoves
 class Queen(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
         self.movecount = '-1'
-        self.validmoves = ((1,0), (0,1), (1,1))
+        self.validmoves = ((1,0), (0,1), (1,1), (-1, 0), (0, -1), (-1, 1), (1, -1), (-1, -1))
         self.validcaptures = self.validmoves
 
 class King(Piece):
@@ -43,7 +43,7 @@ class King(Piece):
         self.incheck = False
         self.cancastle = True
         self.movecount = '1'
-        self.validmoves = ((1,0), (0,1), (1,1))
+        self.validmoves = ((1,0), (0,1), (1,1), (0, -1), (-1, 0), (-1, -1), (-1, 1), (-1, 0))
         self.validcaptures = self.validmoves
 
 class Board(object):
@@ -77,6 +77,44 @@ class Game(object):
         for i in range(len(self.board.array)):
             for j in range(len(self.board.array[i])):
                 self.board.array[i][j] = self.piecedict[self.initpos[i][j]]
+    def movepiece(self, start, end):
+        piece = self.board.array[start[0]][start[1]]
+        loc = self.board.array[end[0]][end[1]]
+        if piece == ' ':
+            return False
+        if loc != ' '
+            if piece.color != loc.color:
+                if self.reachable(piece, end):
+                    self.board.array[end[0]][end[1]] = piece
+                    self.board.readablearray[end[0]][end[1]] = self.readablearray[start[0]][start[1]]
+        if piece == ' ':
+            if self.reachable(piece, end):
+                self.board.array[end[0]][end[1]] = piece
+                self.board.readablearray[end[0]][end[1]] = self.readablearray[start[0]][start[1]]
+
+    def reachable(piece, location, target, validmoves, validcaptures, movecount):
+        try:
+            if location == target:
+                return True
+            if movecount == 0:
+                return False
+            if validmoves == validcaptures:
+                for i in validmoves:
+                    newloc = (location[0] + i[0], location[1] + i[1])
+                    if self.board.readablearray[newloc[0], newloc[1]] == ' ' and piece.passthrough == False:
+                        return reachable(piece, newloc, target, i, i, movecount - 1)
+                    if piece.passthrough == True:
+                        return reachable(piece, newloc, target, i, i, movecount - 1)
+            if validmoves != validcaptures:
+                for i in validcaptures:
+                    if self.board.readablearray[location[0] + i[0]][location[1] + i[1]] == True:
+                        return True
+            
+                for i in validmoves:
+                    newloc = (location[0] + i[0], location[1] + i[1])
+                    return reachable(piece, newloc, target, i, 'nope', movecount - 1)
+        except IndexError:
+            return False
 class MicroChess(Game):
     def __init__(self):
         Game.__init__(self)
