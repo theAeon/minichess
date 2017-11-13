@@ -4,10 +4,14 @@ class Piece(object):
 class Pawn(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
+        if self.color == 'White':
+            self.validmoves = ((1, 0), (0,0))
+            self.validcaptures = ((1, 1), (1,-1))
+        else:
+            self.validmoves = ((-1, 0), (0,0))
+            self.validcaptures = ((-1,-1), (-1, 1))
         self.candouble = True
         self.movecount = 2
-        self.validmoves = ((1, 0))
-        self.validcaptures = ((1, 1))
 class Knight(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
@@ -91,20 +95,29 @@ class Game(object):
 
     def reachable(self, piece, location, target, validmoves, validcaptures, movecount):
         try:
-            if movecount == 0:
-                return True
-            for i in validmoves:
-                newloc = (location[0] + i[0], location[1] + i[1])
-                if self.board.readablearray[newloc[0]][newloc[1]] == ' ' or self.board.array[newloc[0]][newloc[1]].color != piece.color:
-                    return self.reachable(piece, newloc, target, i, i, movecount - 1)
-                else:
-                    return False
-            for i in list(set(validcaptures).difference(set(validmoves))):
-                if self.board.array[location[0] + i[0]][location[1] + i[1]] != ' ':
-                    if self.board.array[location[0] + i[0]][location[1] + i[1]].color != piece.color:    
+            if location == target:
+                if self.board.array[location[0]][location[1]] == ' ':
+                    return True
+                if self.board.array[location[0]][location[1]].color != piece.color:
+                    if validcaptures == validmoves:
                         return True
+                return False
+            for i in validmoves:
+                print('i' + str(i))
+                print('loc' + str(location))
+                newloc = ((location[0] + i[0], location[1] + i[1]))
+                if self.board.readablearray[newloc[0]][newloc[1]] == ' ':
+                    return self.reachable(piece, newloc, target, validmoves, validcaptures, movecount - 1)
+            for i in list(set(validcaptures).difference(set(validmoves))):
+                newloc = ((location[0] + i[0]),(location[1] + i[1]))
+                if self.board.array[newloc[0]][newloc[1]] != ' ':
+                    if self.board.array[newloc[0]][newloc[1]].color != piece.color:    
+                        return self.reachable(piece, newloc, target, validcaptures, validcaptures, movecount - 1)
         except IndexError:
             print("caught indexerror")
+            self.reachable(piece, location, target, validmoves[1:], validcaptures[1:], movecount)
+        except RecursionError:
+            print("caught recursionerror")
             return False
 class MicroChess(Game):
     def __init__(self):
