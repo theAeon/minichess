@@ -2,6 +2,7 @@ class Piece(object):
     def __init__(self, color):
         self.color = color
         self.name = 'lul'
+        self.candouble = False
 class Pawn(Piece):
     def __init__(self, color):
         Piece.__init__(self, color)
@@ -92,6 +93,38 @@ class Game(object):
             self.board.array[start[0]][start[1]] = ' '
             self.board.readablearray[end[0]][end[1]] = self.board.readablearray[start[0]][start[1]]
             self.board.readablearray[start[0]][start[1]] = ' '
+            if self.board.array[end[0]][end[1]].candouble == True:
+                self.board.array[end[0]][end[1]].candouble == False
+                self.board.array[end[0]][end[1]].movecount -= 1
+            if self.board.array[end[0]][end[1]].name == Pawn:
+                if end[0] == max(range(len(self.board.array))) or end[0] == 0:
+                    a = input("Promote Piece (Q, N, B, R) ")
+                    if a == 'Q':
+                        self.board.array[end[0]][end[1]] = Queen(self.board.array[end[0]][end[1]].color)
+                        if self.board.array[end[0]][end[1]].color == 'White':
+                            self.board.readablearray[end[0]][end[1]] = 'Q'
+                        else:
+                            self.board.readablearray[end[0]][end[1]] = 'q'
+                    if a == 'N':
+                        self.board.array[end[0]][end[1]] = Knight(self.board.array[end[0]][end[1]].color)
+                        if self.board.array[end[0]][end[1]].color == 'White':
+                            self.board.readablearray[end[0]][end[1]] = 'N'
+                        else:
+                            self.board.readablearray[end[0]][end[1]] = 'n'
+                    if a == 'R':
+                        self.board.array[end[0]][end[1]] = Rook(self.board.array[end[0]][end[1]].color)
+                        self.board.array[end[0]][end[1]].cancastle = False
+                        if self.board.array[end[0]][end[1]].color == 'White':
+                            self.board.readablearray[end[0]][end[1]] = 'R'
+                        else:
+                            self.board.readablearray[end[0]][end[1]] = 'r'
+                    if a == 'B':
+                        self.board.array[end[0]][end[1]] = Bishop(self.board.array[end[0]][end[1]].color)
+                        if self.board.array[end[0]][end[1]].color == 'White':
+                            self.board.readablearray[end[0]][end[1]] = 'B'
+                        else:
+                            self.board.readablearray[end[0]][end[1]] = 'b'
+
             return True
         else:
             return False
@@ -120,6 +153,8 @@ class Game(object):
                     print(target)
                     if newloc == target and self.board.array[newloc[0]][newloc[1]] != ' ' and self.board.array[newloc[0]][newloc[1]].color != piece.color:
                         return True
+            else:
+                return False
         except IndexError:
             print("caught indexerror")
             return self.reachable(piece, location, target, validmoves[1:], validcaptures, movecount, name, origloc)
