@@ -147,27 +147,18 @@ class Game(object):
                 if name == 'notapawn':
                     return True
             for i in validmoves:
-                print('i' + str(i))
-                print('loc' + str(location))
                 newloc = ((location[0] + i[0], location[1] + i[1]))
                 if self.board.array[newloc[0]][newloc[1]] == ' ' or self.board.array[newloc[0]][newloc[1]].color != piece.color:
                     return self.reachable(piece, newloc, target, validmoves, validcaptures, movecount - 1, name, origloc)
             if piece.name == 'Pawn':
                 for i in validcaptures:
-                    print(i)
                     newloc = (origloc[0] + i[0], origloc[1] + i[1])
-                    print(newloc)
-                    print(target)
                     if newloc == target and self.board.array[newloc[0]][newloc[1]] != ' ' and self.board.array[newloc[0]][newloc[1]].color != piece.color:
                         return True
             else:
                 return False
         except IndexError:
-            print("caught indexerror")
             return self.reachable(piece, location, target, validmoves[1:], validcaptures, movecount, name, origloc)
-        except RecursionError:
-            print("caught recursionerror")
-            return False
     def has_won(self):
         return False
 class MicroChess(Game):
@@ -186,8 +177,6 @@ def askmove(chess, color):
     del end[1]
     start = [int(x) for x in start]
     end = [int(x) for x in end]
-    print(start)
-    print(end)
     return (tuple(start), tuple(end))
 
 def human_v_human(game, color='White'):
