@@ -1,4 +1,5 @@
 class Piece(object):
+    ''' base class'''
     def __init__(self, color):
         self.color = color
         self.name = 'lul'
@@ -51,17 +52,20 @@ class King(Piece):
         self.validcaptures = self.validmoves
 
 class Board(object):
+    '''defines state of play'''
     def __init__(self, dim1, dim2):
         self.dim = (dim1, dim2)
         self.array = []
         self.readablearray = []
         self.createarray()
     def createarray(self):
+        '''creates array of colums x rows'''
         for column in range(self.dim[0]):
             self.array.append([])
             for i in range(self.dim[1]):
                 self.array[column].append(' ')
     def printboard(self):
+        '''prints game state'''
         inverse = self.readablearray[::-1]
         for column in range(len(inverse)):
             columnstr = ''
@@ -75,15 +79,18 @@ class Board(object):
 
 class Game(object):
     def __init__(self):
+        '''defines initial game state'''
         self.piecedict= {' ' : ' ', 'K' : King('White'), 'N' : Knight('White'), 'P': Pawn('White'), 'Q': Queen('White'), 'R' : Rook('White'), 'B': Bishop('White'), 'k' : King('Black'), 'n' : Knight('Black'), 'p': Pawn('Black'), 'q': Queen('Black'), 'r' : Rook('Black'), 'b': Bishop('Black')}
         self.initpos = ([])
         self.board = Board(1, 1)
     def populate(self):
+        '''copies initial state to board'''
         self.board.readablearray = self.initpos
         for i in range(len(self.board.array)):
             for j in range(len(self.board.array[i])):
                 self.board.array[i][j] = self.piecedict[self.initpos[i][j]]
     def movepiece(self, start, end):
+        '''moves a piece to a location if allowed'''
         piece = self.board.array[start[0]][start[1]]
         loc = self.board.array[end[0]][end[1]]
         if piece == ' ':
@@ -96,7 +103,7 @@ class Game(object):
             if self.board.array[end[0]][end[1]].candouble == True:
                 self.board.array[end[0]][end[1]].candouble == False
                 self.board.array[end[0]][end[1]].movecount -= 1
-            if self.board.array[end[0]][end[1]].name == Pawn:
+            if self.board.array[end[0]][end[1]].name == 'Pawn':
                 if end[0] == max(range(len(self.board.array))) or end[0] == 0:
                     a = input("Promote Piece (Q, N, B, R) ")
                     if a == 'Q':
@@ -182,7 +189,9 @@ def askmove(chess, color):
     print(start)
     print(end)
     return (tuple(start), tuple(end))
+
 def human_v_human(game, color='White'):
+    ''' game logic'''
     chess = game()
     chess.populate()
     while chess.has_won() == False:
